@@ -18,12 +18,13 @@ class MyModel(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=1)
         self.conv3 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, stride=1, padding=1)
         self.conv4 = nn.Conv2d(in_channels=256, out_channels=512, kernel_size=3, stride=1, padding=1)
+        self.conv5 = nn.Conv2d(in_channels=512, out_channels=1028, kernel_size=3, stride=1, padding=1)
         
         # Max pooling layer
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
         
         # Fully connected layers
-        self.fc1 = nn.Linear(512 * 14 * 14, 1024) 
+        self.fc1 = nn.Linear(1028 * 7 * 7, 1024) 
         self.fc2 = nn.Linear(1024, 512)
         self.fc3 = nn.Linear(512, num_classes)
         
@@ -50,7 +51,10 @@ class MyModel(nn.Module):
         x = self.relu(self.conv4(x))
         x = self.pool(x)
         
-        x = x.view(-1, 512 * 14 * 14)
+        x = self.relu(self.conv5(x))
+        x = self.pool(x)
+        
+        x = x.view(-1, 1028 * 7 * 7)
         
         x = self.relu(self.fc1(x))
         x = self.dropout(x)
