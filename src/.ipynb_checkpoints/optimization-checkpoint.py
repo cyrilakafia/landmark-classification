@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim
 
 
-def get_loss(use_cuda=False):
+def get_loss():
     """
     Get an instance of the CrossEntropyLoss (useful for classification),
     optionally moving it to the GPU if use_cuda is set to True
@@ -11,8 +11,6 @@ def get_loss(use_cuda=False):
 
     # YOUR CODE HERE: select a loss appropriate for classification
     loss  = nn.CrossEntropyLoss()# YOUR CODE HERE
-    if use_cuda and torch.cuda.is_available():
-        loss = loss.cuda()
 
     return loss
 
@@ -45,7 +43,6 @@ def get_optimizer(
         opt = torch.optim.Adam(
             model.parameters(),
             lr=learning_rate,
-            betas=(momentum, 0.999),
             weight_decay=weight_decay
         )
     else:

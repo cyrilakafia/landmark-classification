@@ -16,7 +16,7 @@ def train_one_epoch(train_dataloader, model, optimizer, loss):
     if torch.cuda.is_available():
         # YOUR CODE HERE: transfer the model to the GPU
         # HINT: use .cuda()
-        model.cuda()
+        model = model.cuda()
 
     # YOUR CODE HERE: set the model to training mode
     model.train()
@@ -69,7 +69,7 @@ def valid_one_epoch(valid_dataloader, model, loss):
         model.eval()
 
         if torch.cuda.is_available():
-            model.cuda()
+            model = model.cuda()
 
         valid_loss = 0.0
         correct = 0.

@@ -23,6 +23,10 @@ def get_data_loaders(
     :return a dictionary with 3 keys: 'train_one_epoch', 'valid' and 'test' containing respectively the
             train_one_epoch, validation and test data loaders
     """
+    
+    # if num_workers == -1:
+    #     # Use all cores
+    #     num_workers = multiprocessing.gpu_count()
 
     # We will fill this up later
     data_loaders = {"train": None, "valid": None, "test": None}
@@ -31,7 +35,6 @@ def get_data_loaders(
 
     # Compute mean and std of the dataset
     mean, std = compute_mean_and_std()
-    print(f"Dataset mean: {mean}, std: {std}")
 
     # YOUR CODE HERE:
     # create 3 sets of data transforms: one for the training dataset,
@@ -44,9 +47,19 @@ def get_data_loaders(
         "train": transforms.Compose([
             transforms.Resize(256),
             transforms.CenterCrop(224),
-            transforms.RandAugment(),
+            transforms.RandomAffine(scale=(1., 1.25), translate=(0, .1), degrees=(-15, 15), shear=(-10,10)),
+            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+            transforms.RandomHorizontalFlip(0.5),
+            # transforms.RandomGrayscale(p=.1),
+            # transforms.RandomPerspective(p=.5),
+            
+            # transforms.RandAugment(                    
+            #         num_ops=2,
+            #         magnitude=9,
+            #         interpolation=transforms.InterpolationMode.BILINEAR
+            # ),
             transforms.ToTensor(),
-            transforms.Normalize((mean), (std)),
+            transforms.Normalize(mean, std),
             
         ]
         ),
@@ -54,14 +67,14 @@ def get_data_loaders(
             transforms.Resize(256),
             transforms.CenterCrop(224),
             transforms.ToTensor(),
-            transforms.Normalize((mean), (std))
+            transforms.Normalize(mean, std)
         ]
         ),
         "test": transforms.Compose([
             transforms.Resize(256),
             transforms.CenterCrop(224),
             transforms.ToTensor(),
-            transforms.Normalize((mean), (std))
+            transforms.Normalize(mean, std)
         ]
         ),
     }
